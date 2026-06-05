@@ -433,7 +433,7 @@ ai:
 
   model: "gemini/gemini-3-pro-preview"
 
-  api_key: "AIzaSyDucDhcLyjLPyY50y7tqBvaJt7fVLfABy8"                       # API Key（建議使用環境變量 AI_API_KEY）
+  api_key: "XXX"                       # API Key（建議使用環境變量 AI_API_KEY）
   
   api_base: ""                      # 自定義 API 地址（可選，絕大多數情況留空即可）
                                     #
