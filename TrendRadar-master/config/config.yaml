@@ -1,0 +1,565 @@
+# ═══════════════════════════════════════════════════════════════
+#                    TrendRadar 設定檔案
+#                      Version: 2.3.0
+# ═══════════════════════════════════════════════════════════════
+
+
+# 可視化設定編輯器地址: https://sansan0.github.io/TrendRadar/
+
+
+# ===============================================================
+# 1. 基礎設置
+# ===============================================================
+app:
+  # 時區設定（影響所有時間顯示、調度系統判斷、數據存儲）
+  # 常用時區：
+  #   - Asia/Shanghai (北京時間 UTC+8)
+  #   - America/New_York (美東時間 UTC-5/-4)
+  #   - Europe/London (倫敦時間 UTC+0/+1)
+  # 完整時區列表: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  timezone: "Asia/Taipei"
+  show_version_update: true           # 是否顯示版本更新提示（true=顯示, false=隱藏）
+
+
+# ===============================================================
+# 1.5 調度系統 —— 什麼時間做什麼事
+#
+# 通過 timeline.yaml 裡定義的時間段來自動決定：
+#   - 什麼時候推送通知
+#   - 什麼時候做 AI 分析
+#   - 用什麼報告模式
+#
+# 快速上手：選一個預設模板，改 preset 的值就行
+#
+#   always_on       → 全天候，有新增即推送
+#   morning_evening → 全天推送 + 晚間當日匯總（推薦）
+#   office_hours    → 工作日三段式（到崗→午間→收工），周末增量自由推
+#   night_owl       → 午後速覽 + 深夜全天匯總
+#   custom          → 完全自定義，詳見 timeline.yaml
+#
+# 詳細時間線圖請查看 config/timeline.yaml
+# ===============================================================
+schedule:
+  enabled: false                        # 是否啟用調度系統（true=啟用, false=關閉，預設關閉）
+  preset: "morning_evening"             # 預設模板名稱（見上方說明）
+
+
+# ===============================================================
+# 2. 數據源 - 熱榜平臺
+#
+# 數據來源於 newsnow 開源項目: https://github.com/ourongxing/newsnow
+# 你可以自行部署 newsnow 並將 api_url 指向你自己的實例
+#
+# enabled: 是否啟用熱榜抓取（總開關）
+# api_url: 熱榜數據 API 地址（可選，留空使用預設地址）
+# sources: 平臺列表
+#   - id: 平臺唯一標識（勿修改）
+#   - name: 顯示名稱（可自定義，修改後不影響運行）
+#   - expected_domain: 域名安全校驗（可選，建議設定）
+#     填寫主域名（如 baidu.com），自動匹配該域名及其所有子域名
+#     校驗返回數據中的連結是否為 HTTPS 且域名匹配，不匹配時丟棄該平臺數據並記錄警告
+#     可有效防範連結劫持或數據篡改
+#     只要 api_url 不是你自己部署的實例，都推薦設定 expected_domain
+# ===============================================================
+platforms:
+  enabled: false                         # 是否啟用熱榜平臺抓取（true=啟用, false=關閉）
+  api_url: "http://localhost:4444/api/s"                            # 熱榜數據 API 地址（留空使用預設地址）
+                                        # 如果你自行部署了 newsnow，填入你的地址，如: https://your-domain.com/api/s
+  sources:
+    - id: "toutiao"
+      name: "今日頭條"
+      expected_domain: "toutiao.com"
+    - id: "baidu"
+      name: "百度熱搜"
+      expected_domain: "baidu.com"
+    - id: "wallstreetcn-hot"
+      name: "華爾街見聞"
+      expected_domain: "wallstreetcn.com"
+    - id: "thepaper"
+      name: "澎湃新聞"
+      expected_domain: "thepaper.cn"
+    - id: "bilibili-hot-search"
+      name: "bilibili 熱搜"
+      expected_domain: "bilibili.com"
+    - id: "cls-hot"
+      name: "財聯社熱門"
+      expected_domain: "cls.cn"
+    - id: "ifeng"
+      name: "鳳凰網"
+      expected_domain: "ifeng.com"
+    - id: "tieba"
+      name: "貼吧"
+      expected_domain: "baidu.com"
+    - id: "weibo"
+      name: "微博"
+      expected_domain: "weibo.com"
+    - id: "douyin"
+      name: "抖音"
+      expected_domain: "douyin.com"
+    - id: "zhihu"
+      name: "知乎"
+      expected_domain: "zhihu.com"
+    - id: "v2ex"
+      name: "V2EX"
+      expected_domain: "v2ex.com"
+    - id: "sspai"
+      name: "少數派"
+      expected_domain: "sspai.com"
+    - id: "36kr"
+      name: "36氪"
+      expected_domain: "36kr.com"
+    - id: "github"
+      name: "GitHub Trending"
+      expected_domain: "github.com"
+    - id: "reddit"
+      name: "Reddit"
+      expected_domain: "reddit.com"
+
+
+
+# ===============================================================
+# 3. 數據源 - RSS 訂閱
+#
+# 與熱榜數據分開存儲，按時間流展示
+# 每個源設定：id(唯一標識)、name(顯示名稱)、url(訂閱地址)
+# enabled: 可選，預設 true
+# max_age_days: 可選，覆蓋全局 freshness_filter.max_age_days
+# ===============================================================
+rss:
+  enabled: true                       # 是否啟用 RSS 抓取（true=啟用, false=關閉）
+
+  # 文章新鮮度過濾（過濾超齡舊文章，避免重複推送）
+  # 僅在推送階段過濾，所有文章仍會存入資料庫
+  freshness_filter:
+    enabled: true                     # 是否啟用新鮮度過濾（true=啟用, false=關閉）
+
+    max_age_days: 1                   # 最大文章年齡（天）
+                                      # - 正整數：只推送 N 天內的文章
+                                      # - 0：禁用過濾，推送所有文章
+
+  # 單個 feed 可設定 max_age_days 覆蓋全局設置：
+  # - 不設定：使用全局 freshness_filter.max_age_days（預設 3 天）
+  # - 正整數：覆蓋全局設置，只推送此天數內的文章
+  # - 0：禁用此頻道的新鮮度過濾，推送所有文章
+  feeds:
+    - id: "cna-first"
+      name: "中央社-頭條新聞"
+      url: "https://feeds.feedburner.com/cnaFirstNews"
+
+    - id: "pts-news"
+      name: "公視新聞網"
+      url: "https://news.pts.org.tw/xml/news.xml"
+      enabled: false
+
+    - id: "thenewslens"
+      name: "關鍵評論網"
+      url: "https://www.thenewslens.com/feed"
+      enabled: false
+
+    - id: "hacker-news"
+      name: "Hacker News"
+      url: "https://hnrss.org/frontpage"
+
+    - id: "ruanyifeng"
+      name: "阮一峰的網路日誌"
+      url: "http://www.ruanyifeng.com/blog/atom.xml"
+      enabled: false                  # 禁用
+      # max_age_days: 3               # 示例：推送 3 天內的文章（更新較慢的博客）
+     
+    - id: "yahoo-finance"
+      name: "雅虎財經"
+      url: "https://finance.yahoo.com/news/rssindex"
+
+    - id: "cnyes-headline"
+      name: "鉅亨網-頭條新聞"
+      url: "https://news.cnyes.com/rss/news/headline"
+      enabled: false
+
+    - id: "cnyes-tw-stock"
+      name: "鉅亨網-台股新聞"
+      url: "https://news.cnyes.com/rss/news/tw_stock"
+      enabled: false
+
+    - id: "udn-money"
+      name: "經濟日報-即時財經"
+      url: "https://money.udn.com/rssfeed/news/1001?ch=money"
+
+    - id: "ctee-news"
+      name: "工商時報-即時新聞"
+      url: "https://www.ctee.com.tw/rss/news"
+      enabled: false
+
+    - id: "moneydj-news"
+      name: "MoneyDJ理財網-即時新聞"
+      url: "https://www.moneydj.com/KMDJ/RssFeed.aspx?show=1"
+      enabled: false
+
+    - id: "ptt-stock"
+      name: "PTT-Stock板"
+      url: "https://www.ptt.cc/atom/Stock.xml"
+      enabled: false
+
+    - id: "ptt-tech-job"
+      name: "PTT-Tech_Job板"
+      url: "https://www.ptt.cc/atom/Tech_Job.xml"
+
+    - id: "ithome"
+      name: "iThome-科技新聞"
+      url: "https://www.ithome.com.tw/rss"
+
+    - id: "technews"
+      name: "科技新報"
+      url: "https://technews.tw/feed/"
+
+    - id: "bnext"
+      name: "數位時代"
+      url: "https://www.bnext.com.tw/headers/rss"
+      enabled: false
+
+
+# ===============================================================
+# 4. 報告模式
+# ===============================================================
+report:
+  mode: "current"                     # 報告模式（開啟 schedule 後作為預設值，會被 timeline 時段覆蓋）
+                                      # daily = 當日匯總，按時推送當天所有匹配新聞（會包含之前推過的）
+                                      # current = 當前榜單，按時推送當前在榜的匹配新聞（持續在榜的每次都出現）
+                                      # incremental = 增量監控，只推送新增內容，零重複（沒有新增時不推送）
+
+  display_mode: "keyword"             # 分組維度
+                                      # keyword = 按關鍵詞分組顯示
+                                      # platform = 按平臺/來源分組顯示
+
+  sort_by_position_first: false       # 關鍵詞模式排序（僅 display_mode=keyword 時生效）
+                                      # true = 按 frequency_words.txt 的定義順序
+                                      # false = 按匹配到的熱點條數排序（多的在前）
+
+  rank_threshold: 5                   # 排名高亮閾值（影響展示強調，不改變抓取範圍）
+
+  max_news_per_keyword: 0             # 每個關鍵詞/標籤最大顯示數量（0=不限制，僅影響展示裁剪）
+
+
+# ===============================================================
+# 4.5 篩選策略
+# ===============================================================
+filter:
+  method: "keyword"                     # 篩選方式（二選一）
+                                       # keyword = 關鍵詞匹配，不調用 AI，不消耗 token，但規則固定
+                                       #           詞組定義在 config/frequency_words.txt
+                                       # ai = AI 智能分類，更靈活但每次運行消耗 token
+                                       #      興趣描述在 config/ai_interests.txt，需配合下方 ai_filter
+
+  priority_sort_enabled: true          # AI 模式標籤排序（僅 method=ai 時生效）
+                                       # true = 按興趣描述中的定義順序
+                                       # false = 按匹配條數排序（多的在前）
+
+
+# ===============================================================
+# 4.6 AI 智能篩選設定（僅 filter.method=ai 時生效）
+# ===============================================================
+ai_filter:
+  batch_size: 200                         # 每批發送給 AI 的標題數，超過此數量自動分批
+  batch_interval: 2                       # 分批間隔（秒），避免觸發 API 限流，0=不等待
+
+  min_score: 0.7                          # 推送最低分數閾值（0.0~1.0），值越高越嚴格
+                                          # 推薦 0.5~0.7 起步，0=不過濾
+
+  # 興趣描述檔案（預設 config/ai_interests.txt，無需設定）
+  # 自定義檔案放入 config/custom/ai/ 目錄，然後指定檔案名：
+  # interests_file: "finance.txt"    # → 加載 config/custom/ai/finance.txt
+
+  reclassify_threshold: 0.6              # 全量重分類觸發閾值（0~1）
+                                          # 越低越傾向全量重分類（更準但更耗 token）
+                                          # 越高越傾向增量更新（更省但可能不夠新）
+
+  # 以下提示詞模板一般無需修改（不建議動）
+
+  # 分類提示詞模板
+  prompt_file: "prompt.txt"
+
+  # 標籤提取提示詞模板（首次運行時使用）
+  extract_prompt_file: "extract_prompt.txt"
+
+  # 標籤更新提示詞模板（興趣變更時 AI 對比新舊標籤）
+  update_tags_prompt_file: "update_tags_prompt.txt"
+
+
+# ===============================================================
+# 5. 推送內容控制
+#
+# 統一管理推送消息中顯示哪些區域及其排列順序
+# ===============================================================
+display:
+  # 區域顯示順序（從上到下 = 推送中從上到下）
+  # 調整順序：剪切粘貼整行即可
+  # 要顯示某個區域，需同時：1. 在此列表中  2. 下方 regions 對應開關為 true
+  region_order:
+    - new_items                           # 1️⃣ 新增熱點區域
+    - hotlist                             # 2️⃣ 熱榜區域（關鍵詞匹配 / AI 智能篩選）
+    - rss                                 # 3️⃣ RSS 訂閱區域
+    - standalone                          # 4️⃣ 獨立展示區
+    - ai_analysis                         # 5️⃣ AI 分析區域
+
+  # 推送區域開關（需配合上方 region_order 使用）
+  regions:
+    hotlist: true                     # 熱榜區域：關鍵詞匹配 / AI 智能篩選（true=顯示, false=隱藏）
+    new_items: false                  # 新增熱點區域：含熱榜新增 + RSS 新增（true=顯示, false=隱藏）
+                                      # 註：熱點詞彙統計中的新增標記🆕不受此設定影響
+
+    rss: true                         # RSS 訂閱區域（true=顯示並分析, false=隱藏並跳過分析）
+    standalone: false                 # 獨立展示區：完整熱榜/RSS，不受關鍵詞過濾（true=顯示, false=隱藏）
+    ai_analysis: true                 # AI 分析區域（true=顯示, false=隱藏）
+
+  # 獨立展示區：將指定平臺/RSS 完整展示，不受關鍵詞過濾
+  # 推送展示由 regions.standalone 控制，AI 分析由 ai_analysis.include_standalone 控制
+  standalone:
+    platforms: ["zhihu", "wallstreetcn-hot"]     # 熱榜平臺 ID 列表（如 ["zhihu", "weibo"]）
+    rss_feeds: []                                # RSS 源 ID 列表（如 ["hacker-news"]）
+    max_items: 20                                # 每個源最多展示條數（0=不限制）
+
+
+# ===============================================================
+# 6. 推送通知
+#
+# ⚠️ 安全警告：webhook 地址不要公開！
+#    GitHub 部署請將 webhook 填入 GitHub Secrets，不要寫在這裡
+#
+# 📌 多帳號：分號(;)分隔，如 "url1;url2;url3"
+#    配對項（如 Telegram token 和 chat_id）數量必須一致
+# ===============================================================
+notification:
+  enabled: false                       # 是否啟用通知功能（true=啟用, false=關閉）—— 總開關
+                                      # 開啟 schedule 後此項仍為總開關：false=永遠不推送，true=由調度控制
+
+  # 推送渠道設定
+  channels:
+    feishu:
+      webhook_url: ""                 # 飛書機器人 webhook URL
+
+    dingtalk:
+      webhook_url: ""                 # 釘釘機器人 webhook URL
+
+    wework:
+      webhook_url: ""                 # 企業微信機器人 webhook URL
+      msg_type: "markdown"            # 消息類型：markdown(群機器人) | text(個人微信應用)
+
+    telegram:
+      bot_token: ""                   # Telegram Bot Token
+      chat_id: ""                     # Telegram Chat ID
+
+    email:
+      from: ""                        # 發件人信箱地址
+      password: ""                    # 發件人信箱密碼或授權碼
+      to: ""                          # 收件人信箱，多個用逗號分隔
+      smtp_server: ""                 # SMTP 伺服器（可選，留空自動識別）
+      smtp_port: ""                   # SMTP 埠（可選，留空自動識別）
+
+    ntfy:
+      server_url: "https://ntfy.sh"   # ntfy 伺服器地址（可改為自託管）
+      topic: ""                       # ntfy 主題名稱
+      token: ""                       # ntfy 訪問令牌（可選，用於私有主題）
+
+    bark:
+      url: ""                         # Bark 推送 URL（格式：https://api.day.app/your_device_key）
+
+    slack:
+      webhook_url: ""                 # Slack Incoming Webhook URL
+
+    generic_webhook:
+      webhook_url: ""                 # 通用 Webhook URL（支援 Discord、Matrix、IFTTT 等）
+      payload_template: ""            # JSON 模板，支援 {title} 和 {content} 佔位符
+                                      # 示例：{"content": "{content}"}
+                                      # 留空則使用預設格式：{"title": "{title}", "content": "{content}"}
+
+
+# ===============================================================
+# 7. 存儲設定
+# ===============================================================
+storage:
+  # 存儲後端選擇
+  # - auto: 自動選擇（GitHub Actions 且設定了遠程存儲 → remote，否則 → local）
+  # - local: 本地 SQLite + TXT/HTML 檔案
+  # - remote: 遠程雲存儲（S3 兼容協議，支援 R2/OSS/COS 等）
+  backend: "auto"
+
+  # 數據格式選項
+  formats:
+    sqlite: true                      # 主存儲（必須保持 true，請勿關閉）
+    txt: true                        # 是否生成 TXT 快照（true=生成, false=不生成）
+    html: false                        # 是否生成 HTML 報告（true=生成, false=不生成）
+                                      # ⚠️ 郵件推送或者需要看網頁版報告必須設為 true
+
+  # 本地存儲設定
+  local:
+    data_dir: "output"                # 數據目錄
+    retention_days: 30                # 保留天數（0=永久保留）
+
+  # 遠程存儲設定（S3 兼容協議）
+  # 支援: Cloudflare R2, 阿里雲 OSS, 騰訊雲 COS, AWS S3, MinIO 等
+  # 建議將敏感信息設定在 GitHub Secrets 或環境變量中
+  remote:
+    retention_days: 0                 # 保留天數（0=永久保留）
+
+    # S3 兼容設定（或使用環境變量 S3_ENDPOINT_URL 等）
+    endpoint_url: ""                  # 服務端點
+                                      # Cloudflare R2: https://<account_id>.r2.cloudflarestorage.com
+                                      # 阿里雲 OSS: https://oss-cn-hangzhou.aliyuncs.com
+                                      # 騰訊雲 COS: https://cos.ap-guangzhou.myqcloud.com
+    bucket_name: ""                   # 存儲桶名稱
+    access_key_id: ""                 # 訪問密鑰 ID
+    secret_access_key: ""             # 訪問密鑰
+    region: ""                        # 區域（可選，部分服務商需要）
+
+  # 數據拉取（從遠程同步到本地，用於 MCP Server 等場景）
+  pull:
+    enabled: false                    # 是否啟用啟動時自動拉取（true=啟用, false=關閉）
+    days: 7                           # 拉取最近 N 天的數據
+
+
+# ===============================================================
+# 8. AI 模型設定（ai_analysis / ai_translation / ai_filter 共用）
+# ===============================================================
+ai:
+  # LiteLLM 模型格式: 提供商/模型名
+  # 示例:
+  #   - deepseek/deepseek-v4-flash (DeepSeek，便宜夠用，推薦)
+  #   - deepseek/deepseek-v4-pro
+  #   - openai/gpt-4o (OpenAI)
+  #   - gemini/gemini-2.5-flash (Google Gemini)
+  #   - anthropic/claude-sonnet-4-20250514 (Anthropic)
+  #   - ollama/llama3 (本地 Ollama)
+  # 完整列表: https://docs.litellm.ai/docs/providers
+  # 如果你對於看英文文檔比較頭疼，那麼可以點擊頁面右下角的 【Ask AI】 ,用中文詢問怎麼設定
+
+  model: "gemini/gemini-3-pro-preview"
+
+  api_key: "AIzaSyDucDhcLyjLPyY50y7tqBvaJt7fVLfABy8"                       # API Key（建議使用環境變量 AI_API_KEY）
+  
+  api_base: ""                      # 自定義 API 地址（可選，絕大多數情況留空即可）
+                                    #
+                                    # ❓ 什麼時候需要填？
+                                    #    當你使用的 AI 服務商不在上方支援列表中時。
+                                    #    比如某些國內 API 中轉站、私有部署的服務等。
+                                    #    如果你用的是 DeepSeek、OpenAI、Gemini 等主流服務商，
+                                    #    不用填這個，留空就行。
+                                    #
+                                    # 🔧 怎麼填？兩步走：
+                                    #    第一步 - api_base 填寫服務商給你的接口地址
+                                    #      例如: https://your-provider.com/v1
+                                    #
+                                    #    第二步 - model 前面加上 "openai/" 前綴
+                                    #      例如: openai/deepseek-ai/DeepSeek-V3
+                                    #
+                                    # 💡 為什麼要加 openai/ 前綴？
+                                    #    大部分 AI 服務商都兼容同一套通用接口格式，
+                                    #    加上 openai/ 就是告訴系統"用這套通用格式去連接"，
+                                    #    這樣幾乎任何服務商都能接入。
+
+
+  timeout: 120                      # 請求超時（秒）
+
+  temperature: 1.0                  # 採樣溫度 (0.0-2.0)
+                                    # 注意：部分模型(如 gpt-5)可能要求必須為 1.0，否則會報錯
+  
+  max_tokens: 5000                  # 最大生成 token 數
+                                    # 注意：如果 API 不支援此參數(報 HTTP 400)，請設為 0 以禁用發送
+  # 高級選項
+  num_retries: 1                    # 失敗重試次數
+  fallback_models: []               # 備用模型列表（可選）
+                                    # 示例: ["openai/gpt-4o-mini", "openai/deepseek-ai/DeepSeek-V3"]
+
+  # 額外參數（一般無需修改，刪掉 # 號即可啟用）
+  # extra_params:
+  #   top_p: 1.0
+  #   presence_penalty: 0.0
+  #   stop: ["END"]
+
+
+# ===============================================================
+# 9. AI 分析功能（模型設定見上方 ai 段）
+# ===============================================================
+ai_analysis:
+  enabled: true                     # 是否啟用 AI 分析（true=啟用, false=關閉）—— 總開關
+                                    # 開啟 schedule 後此項仍為總開關：false=永遠不分析，true=由調度控制
+
+  language: "Chinese"               # 分析報告語言（如 "English", "Korean", "法語"）
+  prompt_file: "ai_analysis_prompt.txt"   # 提示詞檔案（相對於 config 目錄）
+
+  mode: "follow_report"             # AI 分析模式（可獨立於 report.mode）
+                                    # follow_report = 跟隨 report.mode（預設）
+                                    # daily / current / incremental = 強制使用指定模式
+
+  max_news_for_analysis: 150        # 參與分析的新聞數量上限（控制 token 成本的關鍵項）
+                                    # 熱榜優先佔用配額，RSS 用剩餘配額，獨立展示區不受此限制
+
+  include_rss: false                # 是否包含 RSS 內容進行分析（true=包含, false=不包含）
+  include_standalone: true          # 是否納入獨立展示區數據（true=納入, false=不納入）
+
+  include_rank_timeline: true       # 排名時間線詳細程度
+                                    # true = 完整軌跡（如 1(09:30)→2(10:00)），AI 分析更準但多耗 0.5~1 倍 token
+                                    # false = 簡化格式（排名範圍+出現次數），更省 token
+
+
+
+
+# ===============================================================
+# 10. AI 翻譯功能（模型設定見上方 ai 段）
+#
+# 對推送標題進行翻譯，不包含 AI 分析的內容
+# ===============================================================
+ai_translation:
+  enabled: true                     # 是否啟用翻譯功能（true=啟用, false=關閉）
+  language: "繁體中文"                   # 翻譯目標語言（如 "English", "Korean", "法語"）
+  prompt_file: "ai_translation_prompt.txt"   # 提示詞檔案（相對於 config 目錄）
+
+  # 翻譯範圍（display.regions 關閉的區域即使開啟也不會翻譯）
+  scope:
+    hotlist: false                  # 翻譯熱榜標題（true=翻譯, false=不翻譯）
+    rss: true                       # 翻譯 RSS 標題（true=翻譯, false=不翻譯）
+    standalone: true                # 翻譯獨立展示區標題（true=翻譯, false=不翻譯）
+
+
+# ===============================================================
+# 11. 高級設置（一般無需修改）
+# ===============================================================
+advanced:
+  debug: false                        # 調試模式（true=開啟詳細日誌, false=正常模式）
+
+  # 版本檢查
+  version_check_url: "https://raw.githubusercontent.com/sansan0/TrendRadar/refs/heads/master/version"
+  mcp_version_check_url: "https://raw.githubusercontent.com/sansan0/TrendRadar/refs/heads/master/version_mcp"
+  configs_version_check_url: "https://raw.githubusercontent.com/sansan0/TrendRadar/refs/heads/master/version_configs"
+
+  # 熱榜爬蟲技術參數
+  crawler:
+    request_interval: 2000            # 請求間隔（毫秒）
+    use_proxy: false                  # 是否啟用代理（true=啟用, false=不使用）
+    default_proxy: "http://127.0.0.1:10801"
+
+  # RSS 設置
+  rss:
+    request_interval: 1000            # 請求間隔（毫秒）
+    timeout: 15                       # 請求超時（秒）
+    use_proxy: false                  # 是否使用代理（true=啟用, false=不使用）
+    proxy_url: ""                     # RSS 專屬代理（留空則使用 crawler.default_proxy）
+
+  # 排序權重（用於重新排序不同平臺的熱搜）
+  # 合起來等於 1
+  weight:
+    rank: 0.6                         # 排名權重
+    frequency: 0.3                    # 頻次權重
+    hotness: 0.1                      # 熱度權重
+
+  # 多帳號限制
+  max_accounts_per_channel: 3         # 每個渠道最大帳號數量
+
+  # 以下為內部參數（一般無需修改）
+  # 消息分批大小（字節）- 內部設定，請勿修改
+  batch_size:
+    default: 4000
+    dingtalk: 20000
+    feishu: 30000
+    bark: 4000
+    slack: 4000
+  batch_send_interval: 3              # 批次發送間隔（秒）
+  feishu_message_separator: "━━━━━━━━━━━━━━━━"

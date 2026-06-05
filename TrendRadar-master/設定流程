@@ -1,0 +1,43 @@
+要讓 TrendRadar 成功運作並推送熱點新聞給您，您主要需要完成以下 3 個最核心的設定：
+
+1️⃣ 設定「推送管道」（您要在哪裡接收報告）
+在 config/config.yaml 的 notification.channels 區段中，選擇一至多個您想接收通知的管道並填入對應的資料：
+
+飛書 / 釘釘 / Slack / 企業微信：
+在對應的群組中建立一個「自訂機器人（Webhook）」。
+將機器人的 Webhook 網址填入對應的欄位中（例如 feishu.webhook_url）。
+電子郵件 (Email)：
+填入 from（寄件者信箱）、password（信箱的授權碼或密碼）、to（收件者信箱）。
+Telegram：
+填入 bot_token 與您個人的 chat_id。
+2️⃣ 設定「您想關注的關鍵詞」（過濾新聞）
+專案預設使用關鍵詞匹配模式（完全免費，不消耗 AI Token）。
+
+設定位置：開啟編輯 config/frequency_words.txt。
+設定方法：在裡面直接寫下您感興趣的關鍵詞（例如：AI、台股、半導體、Nvidia 等，每行寫一組）。
+只有包含這些關鍵詞的熱門新聞才會被篩選出來並推送給您。
+3️⃣ 設定「AI 模型與金鑰」（若想啟用 AI 分析/翻譯/篩選）
+如果您希望有 AI 幫您總結新聞趨勢（ai_analysis）或進行翻譯/智慧篩選：
+
+設定位置：在 config/config.yaml 的 ai 區段。
+設定方法：
+model: 填入您的模型名稱（預設為 deepseek/deepseek-v4-flash，您也可以改成 gemini/gemini-2.5-flash 或其他模型）。
+api_key: 填入您的 API 金鑰。(註：為了安全，您也可以直接設定系統環境變數 AI_API_KEY，不需要寫在設定檔中)
+如果不想使用 AI 功能，可以在 config.yaml 中將 ai_analysis.enabled 和 ai_translation.enabled 設為 false，即可在無 AI 的情況下純靠關鍵詞運作。
+💡 如何啟動與測試？
+當您設定完成後，您可以透過以下步驟進行測試：
+
+啟動虛擬環境（您剛才已啟動）：
+
+bash
+source /home/simon/Desktop/Project/test/rss_finance/venv/bin/activate
+執行主程式進行單次抓取與推送測試：
+
+bash
+python -m trendradar
+(或者執行 python main.py，取決於您的進入點設定)
+
+啟用定時調度（選用）： 如果您希望程式在背景定時自動執行：
+
+在 config/config.yaml 中，將 schedule.enabled 設為 true。
+編輯 config/timeline.yaml 設定您希望抓取與推送的時間段（預設有「早晚匯總」等範本）。
