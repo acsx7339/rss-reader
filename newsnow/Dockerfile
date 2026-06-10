@@ -1,7 +1,9 @@
 FROM node:20.12.2-alpine AS builder
 WORKDIR /usr/src
 COPY . .
+ENV COREPACK_NPM_REGISTRY=https://registry.npmmirror.com
 RUN corepack enable
+RUN npm config set registry https://registry.npmmirror.com
 RUN pnpm install
 RUN pnpm run build
 

@@ -491,6 +491,46 @@ export const originSources = {
       },
     },
   },
+  "yahoo-finance-tw": {
+    name: "Yahoo 奇摩財經",
+    column: "finance",
+    color: "purple",
+    home: "https://tw.news.yahoo.com/finance",
+    sub: {
+      news: {
+        title: "新聞",
+        type: "realtime",
+        interval: Time.Default,
+      },
+    },
+  },
+  "cnyes": {
+    name: "鉅亨網",
+    column: "finance",
+    color: "blue",
+    home: "https://news.cnyes.com",
+    sub: {
+      twstock: {
+        title: "台股",
+        type: "realtime",
+        interval: Time.Default,
+        home: "https://news.cnyes.com/news/cat/tw_stock",
+      },
+    },
+  },
+  "technews": {
+    name: "科技新報",
+    column: "tech",
+    color: "blue",
+    home: "https://technews.tw/",
+    sub: {
+      latest: {
+        title: "最新",
+        type: "realtime",
+        interval: Time.Common,
+      },
+    },
+  },
 } as const satisfies Record<string, OriginSource>
 
 export function genSources() {

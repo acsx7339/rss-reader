@@ -5,7 +5,7 @@ services:
   # 1. NewsNow 服務 (熱榜資料源與閱讀器)
   # -------------------------------------------------------------
   newsnow:
-    image: ghcr.io/ourongxing/newsnow:latest
+    build: ./newsnow
     container_name: newsnow
     restart: unless-stopped
     ports:
