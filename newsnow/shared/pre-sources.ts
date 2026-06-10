@@ -504,17 +504,17 @@ export const originSources = {
       },
     },
   },
-  "cnyes": {
-    name: "鉅亨網",
+  "money-udn": {
+    name: "經濟日報",
     column: "finance",
-    color: "blue",
-    home: "https://news.cnyes.com",
+    color: "orange",
+    home: "https://money.udn.com",
     sub: {
       twstock: {
         title: "台股",
         type: "realtime",
         interval: Time.Default,
-        home: "https://news.cnyes.com/news/cat/tw_stock",
+        home: "https://money.udn.com/money/cate/5590?from=edn_navibar",
       },
     },
   },
