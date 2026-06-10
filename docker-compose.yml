@@ -16,7 +16,6 @@ services:
       - HOST=0.0.0.0
       - PORT=4444
       - NODE_ENV=production
-      # 以下為 GitHub 同步設定，若不需要可保持留空
       - G_CLIENT_ID=${G_CLIENT_ID:-}
       - G_CLIENT_SECRET=${G_CLIENT_SECRET:-}
       - JWT_SECRET=${JWT_SECRET:-}
@@ -34,7 +33,7 @@ services:
     depends_on:
       - newsnow
     ports:
-      - "127.0.0.1:${WEBSERVER_PORT:-8080}:${WEBSERVER_PORT:-8080}"
+      - "127.0.0.1:${WEBSERVER_PORT:-8082}:${WEBSERVER_PORT:-8082}"
     volumes:
       # 將本地的 config 與 output 掛載入容器
       - ./TrendRadar-master/config:/app/config:ro
@@ -42,7 +41,7 @@ services:
     environment:
       - TZ=Asia/Taipei
       # Web 伺服器連接埠
-      - WEBSERVER_PORT=${WEBSERVER_PORT:-8080}
+      - WEBSERVER_PORT=${WEBSERVER_PORT:-8082}
       # 推送通知渠道設定（可透過此處的環境變數覆蓋 config.yaml）
       - FEISHU_WEBHOOK_URL=${FEISHU_WEBHOOK_URL:-}
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}

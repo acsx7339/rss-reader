@@ -62,8 +62,8 @@ schedule:
 #     只要 api_url 不是你自己部署的實例，都推薦設定 expected_domain
 # ===============================================================
 platforms:
-  enabled: false                         # 是否啟用熱榜平臺抓取（true=啟用, false=關閉）
-  api_url: "http://localhost:4444/api/s"                            # 熱榜數據 API 地址（留空使用預設地址）
+  enabled: true                         # 是否啟用熱榜平臺抓取（true=啟用, false=關閉）
+  api_url: "http://newsnow:4444/api/s"                            # 熱榜數據 API 地址（留空使用預設地址）
                                         # 如果你自行部署了 newsnow，填入你的地址，如: https://your-domain.com/api/s
   sources:
     - id: "toutiao"
