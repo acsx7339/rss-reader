@@ -40,29 +40,7 @@ services:
       - ./TrendRadar-master/output:/app/output
     environment:
       - TZ=Asia/Taipei
-      # Web 伺服器連接埠
-      - WEBSERVER_PORT=${WEBSERVER_PORT:-8082}
       # 推送通知渠道設定（可透過此處的環境變數覆蓋 config.yaml）
-      - FEISHU_WEBHOOK_URL=${FEISHU_WEBHOOK_URL:-}
-      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
-      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID:-}
-      - DINGTALK_WEBHOOK_URL=${DINGTALK_WEBHOOK_URL:-}
-      - WEWORK_WEBHOOK_URL=${WEWORK_WEBHOOK_URL:-}
-      - WEWORK_MSG_TYPE=${WEWORK_MSG_TYPE:-}
-      # 郵件推送設定
-      - EMAIL_FROM=${EMAIL_FROM:-}
-      - EMAIL_PASSWORD=${EMAIL_PASSWORD:-}
-      - EMAIL_TO=${EMAIL_TO:-}
-      - EMAIL_SMTP_SERVER=${EMAIL_SMTP_SERVER:-}
-      - EMAIL_SMTP_PORT=${EMAIL_SMTP_PORT:-}
-      # ntfy 推送
-      - NTFY_SERVER_URL=${NTFY_SERVER_URL:-https://ntfy.sh}
-      - NTFY_TOPIC=${NTFY_TOPIC:-}
-      - NTFY_TOKEN=${NTFY_TOKEN:-}
-      # Bark 手機推送
-      - BARK_URL=${BARK_URL:-}
-      # Slack 推送
-      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-}
       # 通用 Webhook
       - GENERIC_WEBHOOK_URL=${GENERIC_WEBHOOK_URL:-}
       - GENERIC_WEBHOOK_TEMPLATE=${GENERIC_WEBHOOK_TEMPLATE:-}
@@ -71,12 +49,6 @@ services:
       - AI_API_KEY=${AI_API_KEY:-}
       - AI_MODEL=${AI_MODEL:-gemini/gemini-2.5-flash}
       - AI_API_BASE=${AI_API_BASE:-}
-      # 遠端 S3 儲存設定 (選擇性)
-      - S3_ENDPOINT_URL=${S3_ENDPOINT_URL:-}
-      - S3_BUCKET_NAME=${S3_BUCKET_NAME:-}
-      - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID:-}
-      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY:-}
-      - S3_REGION=${S3_REGION:-}
       # 定時自動執行排程時間 (預設每 30 分鐘執行一次)
       - CRON_SCHEDULE=${CRON_SCHEDULE:-*/30 * * * *}
       - RUN_MODE=${RUN_MODE:-cron}
