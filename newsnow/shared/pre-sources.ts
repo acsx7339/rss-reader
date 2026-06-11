@@ -531,6 +531,19 @@ export const originSources = {
       },
     },
   },
+  "finance-technews": {
+    name: "財經新報",
+    column: "finance",
+    color: "emerald",
+    home: "https://finance.technews.tw/",
+    sub: {
+      latest: {
+        title: "最新",
+        type: "realtime",
+        interval: Time.Common,
+      },
+    },
+  },
 } as const satisfies Record<string, OriginSource>
 
 export function genSources() {
