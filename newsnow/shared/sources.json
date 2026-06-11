@@ -571,5 +571,81 @@
     "color": "green",
     "interval": 1800000,
     "title": "熱播榜"
+  },
+  "yahoo-finance-tw": {
+    "redirect": "yahoo-finance-tw-news",
+    "name": "Yahoo 奇摩財經",
+    "type": "realtime",
+    "column": "finance",
+    "home": "https://tw.news.yahoo.com/finance",
+    "color": "purple",
+    "interval": 600000,
+    "title": "新聞"
+  },
+  "yahoo-finance-tw-news": {
+    "name": "Yahoo 奇摩財經",
+    "type": "realtime",
+    "column": "finance",
+    "home": "https://tw.news.yahoo.com/finance",
+    "color": "purple",
+    "interval": 600000,
+    "title": "新聞"
+  },
+  "money-udn": {
+    "redirect": "money-udn-twstock",
+    "name": "經濟日報",
+    "type": "realtime",
+    "column": "finance",
+    "home": "https://money.udn.com/money/cate/5590?from=edn_navibar",
+    "color": "orange",
+    "interval": 600000,
+    "title": "台股"
+  },
+  "money-udn-twstock": {
+    "name": "經濟日報",
+    "type": "realtime",
+    "column": "finance",
+    "home": "https://money.udn.com/money/cate/5590?from=edn_navibar",
+    "color": "orange",
+    "interval": 600000,
+    "title": "台股"
+  },
+  "technews": {
+    "redirect": "technews-latest",
+    "name": "科技新報",
+    "type": "realtime",
+    "column": "tech",
+    "home": "https://technews.tw/",
+    "color": "blue",
+    "interval": 1800000,
+    "title": "最新"
+  },
+  "technews-latest": {
+    "name": "科技新報",
+    "type": "realtime",
+    "column": "tech",
+    "home": "https://technews.tw/",
+    "color": "blue",
+    "interval": 1800000,
+    "title": "最新"
+  },
+  "finance-technews": {
+    "redirect": "finance-technews-latest",
+    "name": "財經新報",
+    "type": "realtime",
+    "column": "finance",
+    "home": "https://finance.technews.tw/",
+    "color": "emerald",
+    "interval": 1800000,
+    "title": "最新"
+  },
+  "finance-technews-latest": {
+    "name": "財經新報",
+    "type": "realtime",
+    "column": "finance",
+    "home": "https://finance.technews.tw/",
+    "color": "emerald",
+    "interval": 1800000,
+    "title": "最新"
   }
 }

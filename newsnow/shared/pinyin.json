@@ -36,7 +36,7 @@
   "bilibili-ranking": "bilibili-paixingbang",
   "kuaishou": "kuaishou",
   "kaopu": "kaopuxinwen",
-  "jin10": "jinshishuju",
+  "jin10": "jinshiziliao",
   "baidu": "baiduresou",
   "nowcoder": "niuke",
   "sspai": "shaoshupai",
@@ -49,5 +49,9 @@
   "tencent-hot": "tengxunxinwen-zonghezaobao",
   "freebuf": "Freebuf-wangluoanquan",
   "qqvideo-tv-hotsearch": "tengxunshipin-resoubang",
-  "iqiyi-hot-ranklist": "aiqiyi-rebobang"
+  "iqiyi-hot-ranklist": "aiqiyi-rebobang",
+  "yahoo-finance-tw-news": "Yahoo qimocaijing-xinwen",
+  "money-udn-twstock": "jingjiribao-taigu",
+  "technews-latest": "kejixinbao-zuixin",
+  "finance-technews-latest": "caijingxinbao-zuixin"
 }
