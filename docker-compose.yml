@@ -5,17 +5,21 @@ services:
   # 1. NewsNow 服務 (熱榜資料源與閱讀器)
   # -------------------------------------------------------------
   newsnow:
-    build: ./newsnow
+    build:
+      context: ./newsnow
+      dockerfile: Dockerfile.dev
     container_name: newsnow
     restart: unless-stopped
     ports:
       - '4444:4444'
     volumes:
       - newsnow_data:/usr/app/.data
+      - ./newsnow:/usr/src
+      - /usr/src/node_modules
     environment:
       - HOST=0.0.0.0
       - PORT=4444
-      - NODE_ENV=production
+      - NODE_ENV=development
       - G_CLIENT_ID=${G_CLIENT_ID:-}
       - G_CLIENT_SECRET=${G_CLIENT_SECRET:-}
       - JWT_SECRET=${JWT_SECRET:-}
